@@ -1,34 +1,30 @@
-const holeHasMole = document.querySelector('.hole_has-mole');
-const hole = document.querySelectorAll('.hole');
-const holeGame = document.querySelector('.hole-game');
-const dead = document.querySelector('#dead');
-const lost = document.querySelector('#lost');
+const dead = document.getElementById('dead');
+const lost = document.getElementById('lost');
+const getHole = index => document.getElementById(`hole${index}`);
+function clear (){
+  dead.textContent = 0;
+  lost.textContent = 0;
+}
 
-function beaverFishing() {
-    for (let i = 0; i < hole.length; i++){
-        hole[i].onclick = function () {
-            if(hole[i].className.includes( 'hole_has-mole' )){
-               let now = +dead.textContent;
-               if(now >= 10){
-                 alert("вы победили!!!");
-                 clearInterval(idInterval);
-                 location. reload()
-               } else {
-                dead.textContent = now + 1;
-               }
+for (let i = 1; i <= 9; i++) {
+  getHole(i).onclick =  function (){
 
-            } else {
-                let nowLost = +lost.textContent;
-                if(nowLost >= 5){
-                  alert("вы проиграли.");
-                  clearInterval(idInterval);
-                  location. reload()
-                } else {
-                    lost.textContent = nowLost + 1;
-                }
-            }
-
-            }
+    if (getHole(i).classList.contains('hole_has-mole')){
+      dead.textContent++;
     }
-} 
-const idInterval = setInterval(beaverFishing, 10);
+
+    else {
+      lost.textContent++;
+    }
+
+    if (dead.textContent == 10) {
+      alert('Победа!');
+      clear();
+    }
+
+    else if (lost.textContent == 5) {
+      alert('Вы проиграли');
+      clear();
+    }
+  }
+}
