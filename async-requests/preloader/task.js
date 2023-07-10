@@ -1,32 +1,39 @@
+const loader = document.getElementById('loader');
 const items = document.getElementById('items');
-const loader = document.getElementById('loader')
+const url = 'https://students.netoservices.ru/nestjs-backend/slow-get-courses';
 
 const xhr = new XMLHttpRequest();
-xhr.open("GET", "https://students.netoservices.ru/nestjs-backend/slow-get-courses");
+xhr.open('GET', url);
 xhr.send();
 
-xhr.addEventListener("readystatechange", () => {
-	if (xhr.readyState === xhr.DONE && xhr.statusText === "OK") {
-		loader.classList.remove('loader_active');
+xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
 
-		items.textContent = "";
-		data = JSON.parse(xhr.response).response.Valute;
-		localStorage.setItem("data", JSON.stringify(data));
+        loader.classList.remove('loader_active');
 
-		for (let key in data) {
-			items.innerHTML += `
-    <div class="item">
-      <div class = "item__code">
-        ${data[key].CharCode}
-      </div>
-      <div class = "item__value">
-        ${data[key].Value}
-      </div>
-      <div class = "item__currency">
-        руб.
-      </div>
-    </div>
-    `;
-		}
-	}
-});
+        const json = JSON.parse(xhr.response);
+        const valutes = json.response["Valute"];
+
+        for (let i in valutes) {
+            createItem(valutes[i].CharCode, valutes[i].Value);
+        };
+    }; 
+};
+
+let createItem = function(code, value) {
+    const item = document.createElement('div');
+    item.classList.add('item');
+
+    const itemCode = document.createElement('div');
+    itemCode.classList.add('item__code');
+
+    const itemValue = document.createElement('div');
+    itemValue.classList.add('item__value');
+
+    itemCode.textContent = code;
+    itemValue.textContent = value;
+
+    item.appendChild(itemCode);
+    item.appendChild(itemValue);
+    items.appendChild(item);
+};
